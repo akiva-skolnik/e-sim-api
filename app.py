@@ -825,8 +825,8 @@ def productMarket(https, server):
     last_page = tree.xpath("//ul[@id='pagination-digg']//li[last()-1]//@href") or ['page=1']
     last_page = int(last_page[0].split('page=')[1])
 
-    raw_products = tree.xpath('//*[@id="productMarketItems"]//tr//td[1]//img[1]/@src') or \
-                   tree.xpath("//*[@class='product']//div//img/@src")
+    raw_products = tree.xpath("//*[@class='productMarketOfferList']//*[@class='product']//div//img/@src") or \
+                   tree.xpath("//*[@id='productMarketItems']//*[@class='product']//div//img/@src")
     products = []
     i = -1
     for product in raw_products:
@@ -847,7 +847,7 @@ def productMarket(https, server):
         ccs = [x.strip() for x in tree.xpath("//*[@class='price']/div/text()") if x.strip()][::3]
         stocks = tree.xpath("//*[@class='quantity']/text()")
     row = {"pages": last_page, "offers": []}
-    for seller_id, seller, product, cc, price, stock, offer_id in zip(
+    for seller_id, seller, product, cc, price, stock in zip(
             seller_ids, sellers, products, ccs, raw_prices, stocks):
         row["offers"].append(
             {"seller": seller.strip(), "seller_id": int(seller_id), "product": product, "coin": cc, "price": price,
