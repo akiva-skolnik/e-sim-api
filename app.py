@@ -825,27 +825,33 @@ def productMarket(https, server):
     last_page = tree.xpath("//ul[@id='pagination-digg']//li[last()-1]//@href") or ['page=1']
     last_page = int(last_page[0].split('page=')[1])
 
-    products = [x.split("/")[-1].split(".png")[0] for x in
-                tree.xpath('//*[@id="productMarketItems"]//tr//td[1]//img[1]/@src')]
-    for index, product in enumerate(products):
-        quality = tree.xpath(f'//*[@id="productMarketItems"]//tr[{index + 2}]//td[1]//img[2]/@src')
-        if "Defense System" in product:
-            product = product.replace("Defense System", "Defense_System")
-        if quality:
-            products[index] = f'{quality[0].split("/")[-1].split(".png")[0].upper()} {product}'
+    raw_products = tree.xpath('//*[@id="productMarketItems"]//tr//td[1]//img[1]/@src') or \
+                   tree.xpath("//*[@class='product']//div//img/@src")
+    products = []
+    i = -1
+    for product in raw_products:
+        product = product.replace("_", " ").split("/")[-1].split(".png")[0]
+        if product.startswith("q") and len(product) == 2:
+            products[i] = product.upper() + " " + products[i]
+        else:
+            products.append(product)
+            i += 1
 
-    seller_ids = utils.get_ids_from_path(tree, '//tr//td[2]//a')
-    sellers = [x.strip() for x in tree.xpath('//tr//td[2]//a/text()')]
-    prices = [float(x) for x in tree.xpath("//tr[position()>1]//td[4]/b/text()")][::2]
+    seller_ids = [x.split("=")[-1] for x in tree.xpath("//*[@class='offerer']//@href")]
+    sellers = tree.xpath("//*[@class='offerer']//a/text()")
+    raw_prices = [float(x) for x in tree.xpath("//tr[position()>1]//td[4]/b/text()")][::2]
     ccs = [x.strip() for x in tree.xpath("//tr[position()>1]//td[4]/text()") if x.strip()][::2]
-    stocks = [int(x.strip()) for x in tree.xpath("//tr[position()>1]//td[3]/text()")]
-    offer_ids = tree.xpath('//*[@id="command"]/input[1]/@value')
+    stocks = tree.xpath("//tr[position()>1]//td[3]/text()")
+    if not raw_prices:  # temp, new style in some servers.
+        raw_prices = tree.xpath("//*[@class='productMarketOffer']//b/text()")[::2]
+        ccs = [x.strip() for x in tree.xpath("//*[@class='price']/div/text()") if x.strip()][::3]
+        stocks = tree.xpath("//*[@class='quantity']/text()")
     row = {"pages": last_page, "offers": []}
-    for seller_id, seller, product, cc, price, stock, offer_id in zip(seller_ids, sellers, products, ccs, prices,
-                                                                      stocks, offer_ids):
+    for seller_id, seller, product, cc, price, stock, offer_id in zip(
+            seller_ids, sellers, products, ccs, raw_prices, stocks):
         row["offers"].append(
-            {"seller": seller, "seller_id": int(seller_id), "product": product, "coin": cc, "price": price,
-             "stock": stock, "offer_id": int(offer_id)})
+            {"seller": seller.strip(), "seller_id": int(seller_id), "product": product, "coin": cc, "price": price,
+             "stock": int(stock.strip())})
     return utils.prepare_request(row)
 
 
