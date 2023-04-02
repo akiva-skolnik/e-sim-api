@@ -381,13 +381,15 @@ def region(https, server):
 @app.route('/<https>://<server>.e-sim.org/monetaryMarket.html', methods=['GET'])
 def monetaryMarket(https, server):
     tree = utils.get_tree(f"{request.full_path[1:].replace(f'{https}:/', 'https://')}")
-    buy = tree.xpath('//*[@id="buy"]//option[@selected="selected"]')[0].text
-    sell = tree.xpath('//*[@id="sell"]//option[@selected="selected"]')[0].text
-    sellers = tree.xpath("//td[1]/a/text()")
-    seller_ids = [int(x.split("?id=")[1]) for x in tree.xpath("//td[1]/a/@href")]
-    amounts = tree.xpath("//td[2]/b/text()")
-    ratios = tree.xpath("//td[3]/b/text()")
-    offers_ids = [int(x.value) for x in tree.xpath("//td[4]//form//input[2]")]
+    sellers = tree.xpath("//*[@class='seller']/a/text()")
+    if not sellers:
+        return utils.prepare_request({"error": "no offers"})
+    buy = tree.xpath("//*[@class='buy']/button")[0].attrib['data-buy-currency-name']
+    sell = tree.xpath("//*[@class='buy']/button")[0].attrib['data-sell-currency-name']
+    seller_ids = [int(x.split("?id=")[1]) for x in tree.xpath("//*[@class='seller']/a/@href")]
+    amounts = tree.xpath("//*[@class='amount']//b/text()")
+    ratios = tree.xpath("//*[@class='ratio']//b/text()")
+    offers_ids = [int(x.attrib['data-id']) for x in tree.xpath("//*[@class='buy']/button")]
     row = {"buy": buy, "sell": sell, "offers": []}
     for seller, seller_id, amount, ratio, offer_id in zip(sellers, seller_ids, amounts, ratios, offers_ids):
         row["offers"].append({"seller": seller.strip(), "seller_id": seller_id,
