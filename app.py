@@ -380,7 +380,15 @@ def region(https, server):
 
 @app.route('/<https>://<server>.e-sim.org/monetaryMarket.html', methods=['GET'])
 def monetaryMarket(https, server):
-    tree = utils.get_tree(f"{request.full_path[1:].replace(f'{https}:/', 'https://')}")
+    link = request.full_path[1:].replace(f'{https}:/', 'https://').replace(".html", "Offers")
+    if link.endswith("Offers"):
+        link += "?buyerCurrencyId=1&sellerCurrencyId=0&page=1"
+    else:
+        if "sellerCurrencyId" not in link:
+            link += "&sellerCurrencyId=0"
+        if "page" not in link:
+            link += "&page=1"
+    tree = utils.get_tree(link)
     sellers = tree.xpath("//*[@class='seller']/a/text()")
     if not sellers:
         return utils.prepare_request({"error": "no offers"})
