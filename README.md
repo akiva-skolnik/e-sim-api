@@ -1,5 +1,5 @@
 # e-sim-api
-Unofficial API for [e-sim](https://e-sim.org/) game
+Unofficial API for [e-sim](https://luxia.e-sim.org/) game
 
 ## Usage:
-http://3.70.2.167:5000/
+http://23.95.130.52:5000/

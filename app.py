@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 @app.before_request
 def save_count():
-    api_count = utils.find_one("collection", "api count")
+    api_count = utils.find_one("collection", "api_count")
     if "e-sim.org/" in request.full_path:
         link = request.full_path[1:].split("e-sim.org/")[1].split(".html")[0]
     else:
@@ -25,7 +25,7 @@ def save_count():
         api_count[link] = 0
     api_count[link] += 1
 
-    utils.replace_one("collection", "api count", dict(sorted(api_count.items(), key=lambda kv: kv[1], reverse=True)))
+    utils.replace_one("collection", "api_count", dict(sorted(api_count.items(), key=lambda kv: kv[1], reverse=True)))
 
 
 @app.errorhandler(HTTPException)
