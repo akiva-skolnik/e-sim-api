@@ -67,3 +67,7 @@ def replace_one(collection: str, _id: str, data: dict) -> None:
     filename = f"../db/{collection}_{_id}.json"
     with open(filename, "w", encoding='utf-8', errors='ignore') as file:
         json.dump(data, file)
+
+
+def get_link(https: str, request) -> str:
+    return request.full_path[1:].replace(f'{https}:/', 'https://')
