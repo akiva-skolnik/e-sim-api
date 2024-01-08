@@ -126,6 +126,8 @@ def buffs(https, server):
     "jinxed": (-)HH:MM:SS (time left to end buff/debuff), "finese": HH:MM:SS, "bloodymess": HH:MM:SS, "lucky": HH:MM:SS}]`
     """
     results = utils.find_one("buffs", server)
+    if "Nick" not in results:
+        return utils.prepare_request({})
     del results["Nick"]  # remove headers
     results = [{"nick": k, "link": v[0], "citizenship": v[1], "total_dmg": v[2], "last_online": v[3], "premium": v[4],
                 "buffed_at": v[5], "debuff_ends": v[6], "till_status_change": v[7], "jinxed": v[8], "finese": v[9],
@@ -234,12 +236,13 @@ def region(https, server):
 def monetaryMarket(https, server):
     link = utils.get_link(https, request).replace(".html", "Offers")
     if link.endswith("Offers"):
-        link += "?buyerCurrencyId=1&sellerCurrencyId=0&page=1"
-    else:
-        if "sellerCurrencyId" not in link:
-            link += "&sellerCurrencyId=0"
-        if "page" not in link:
-            link += "&page=1"
+        link += "?"  # link can contain ?&
+    if "sellerCurrencyId" not in link:
+        link += "&sellerCurrencyId=0"
+    if "page" not in link:
+        link += "&page=1"
+    if "buyerCurrencyId" not in link:
+        link += "&buyerCurrencyId=1"
     tree = utils.get_tree(link)
     result = EsimScraper.monetaryMarket(tree)
     return utils.prepare_request(result)
