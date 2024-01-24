@@ -1,8 +1,7 @@
 import json
 from datetime import datetime
 
-from e_sim_game_scrapper import EsimScraper
-from e_sim_game_scrapper import utils as EsimScraperUtils
+from e_sim_game_scrapper import EsimScraper, utils as EsimScraperUtils
 from flask import Flask, redirect, render_template, request
 from waitress import serve
 from werkzeug.exceptions import HTTPException
@@ -54,7 +53,8 @@ def home():
             if link not in not_esim_links:
                 esim_links.append(link)
     esim_links.sort()
-    return render_template('index.html', esim_links=esim_links, not_esim_links=not_esim_links, base_url=request.base_url)
+    return render_template('index.html', esim_links=esim_links, not_esim_links=not_esim_links,
+                           base_url=request.base_url)
 
 
 @app.route('/<https>://<server>.e-sim.org/prices.html', methods=['GET'])

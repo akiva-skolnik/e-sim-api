@@ -11,13 +11,16 @@
 <h2>Available base links:</h2>
 <ul>{% for link in esim_links %}
     <li>{{ link }}</li>
-{% endfor %}</ul>
+    {% endfor %}
+</ul>
 
 <h2>Additional links (from my database):</h2>
 <ul>{% for link in not_esim_links %}
     <li>{{ link }}</li>
-{% endfor %}</ul>
+    {% endfor %}
+</ul>
 (I kept their format similar to the e-sim pages. Check the docstrings in the source code for more info)
+(sometimes they are outdated when I migrate from one server to another)
 <hr>
 <h1>Usage:</h1>
 <p>Add the following prefix to any of the above pages:
@@ -26,12 +29,13 @@
 <p><a href="{{ base_url }}https://alpha.e-sim.org/law.html?id=1">{{ base_url }}https://alpha.e-sim.org/law.html?id=1</a>
 <hr>
 <h1>Source Code:</h1>
-<p><a href=https://github.com/akiva0003/e-sim-api>GitHub</a></p>
+<p><a href=https://github.com/akiva-skolnik/e-sim-api>GitHub</a></p>
 Powered by <a href=https://www.buymeacoffee.com/ripEsim>Akiva</a>
 <hr>
 <p><b>Keep in mind that each request takes twice as much as if you would scrape the html by yourself <br><br>
-(once for the server to get the html and once for the server to send it to you) <br><br>
-If you want faster response times, you can import the source using <a href=https://github.com/akiva0003/e-sim-game-scraper>this project</a>
+    (once for the server to get the html and once for the server to send it to you) <br><br>
+    If you want faster response times, you can import the source using <a
+            href=https://github.com/akiva-skolnik/e-sim-game-scraper>this project</a>
 </b>
 <hr>
 </body>
