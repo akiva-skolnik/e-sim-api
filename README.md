@@ -18,12 +18,12 @@ presentation.
 
 ## API Usage:
 
-1. **Base URL:** Prefix any supported E-sim page URL with the following base URL: https://23.95.130.52:5000/
+1. **Base URL:** Prefix any supported E-sim page URL with the following base URL: https://107.174.205.248:5000/
 
 2. **Example:** To access the details of a specific law (https://alpha.e-sim.org/law.html?id=1), use the following API
    endpoint:
 
-https://23.95.130.52:5000/https://alpha.e-sim.org/law.html?id=1
+https://107.174.205.248:5000/https://alpha.e-sim.org/law.html?id=1
 
 ### Notes:
 
@@ -38,3 +38,9 @@ https://23.95.130.52:5000/https://alpha.e-sim.org/law.html?id=1
   migrations.
 * The API is hosted on a server funded by satisfied users. If you find it useful, consider supporting further
   development through [Buy Me a Coffee](https://www.buymeacoffee.com/ripEsim).
+
+### Run the API Locally:
+
+```bash
+gunicorn app:app --bind 0.0.0.0:5000 --daemon
+```

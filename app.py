@@ -405,5 +405,4 @@ def profile(https, server):
 
 
 if __name__ == '__main__':
-    context = ('server.crt', 'private.key')
-    serve(app, host='0.0.0.0', port=5000, ssl_context=context)
+    serve(app)
